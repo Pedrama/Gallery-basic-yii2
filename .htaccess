@@ -1,0 +1,44 @@
+# Mod_Autoindex
+<IfModule mod_autoindex.c>
+    # Disable Indexes
+    Options -Indexes
+</IfModule>
+
+# Mod_Rewrite
+<IfModule mod_rewrite.c>
+    # Enable symlinks
+    Options +FollowSymlinks
+    # Enable mod_rewrite
+    RewriteEngine On
+
+    # Backend redirect
+    #RewriteCond %{REQUEST_URI} ^/backend
+    RewriteRule ^backend/(.*)$ backend/web/$1 [L]
+#برای نمایش عکس
+    RewriteRule ^images/(.*)$ images/$1 [L]
+
+    # Frontend redirect
+    RewriteCond %{REQUEST_URI} ^(.*)$
+    RewriteRule ^(.*)$ frontend/web/$1
+</IfModule>
+
+<FilesMatch "\.(php)$">
+  <IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+  </IfModule>
+</FilesMatch>
+
+<ifModule mod_headers.c>
+    Header set Connection keep-alive
+</ifModule>
+
+<ifModule mod_gzip.c>
+  mod_gzip_on Yes
+  mod_gzip_dechunk Yes
+  mod_gzip_item_include file \.(html?|txt|css|js|php|pl)$
+  mod_gzip_item_include mime ^application/x-javascript.*
+  mod_gzip_item_include mime ^text/.*
+  mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+  mod_gzip_item_exclude mime ^image/.* 
+  mod_gzip_item_include handler ^cgi-script$
+</ifModule>
